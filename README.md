@@ -1,2 +1,2 @@
 # MODIP_PAPEI
-reports and raw data for the MOODIP office in the university of Piraeus
+reports and raw data for the MODIP office in the university of Piraeus
