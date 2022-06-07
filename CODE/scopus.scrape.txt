@@ -1,0 +1,41 @@
+library(rscopus)
+library(dplyr)
+library(readxl)
+library(openxlsx)
+
+options("elsevier_api_key" = '71ad2f78b364856cd74c6c89513e3f35')
+# token is from Scopus dev
+hdr = inst_token_header('6ad74aba3ba5738865d2331c97d18711')
+
+# search affiliations
+
+# affil <- affil_df(affil_id = '60010667', headers = hdr)
+# 
+# affil2 <- affil$df
+# 
+# write.xlsx(affil2, "affil2.xlsx", row.names = F)
+
+
+datalist = list()
+
+for (i in 1: nrow(test_final)){
+  tryCatch({
+    datalist[[i]] = author_df(au_id = test_final$identifier[i], verbose = FALSE, general = FALSE, headers = hdr)
+  }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
+}
+
+sum(sapply(datalist, is.null))
+
+scopus_list = do.call(rbind.fill, datalist)
+
+unique(scopus_list$au_id)
+
+unique(as.character(scopus_list$affilname_1))
+
+write.xlsx(scopus_list, "scopus_list.xlsx", row.names = F)
+
+unique(total[,c('last_name', 'first_name', 'Department', 'Role', 'au_id')])
+
+total <- merge(test_final, scopus_list, by.x = 'identifier', by.y = 'au_id', all = TRUE)
+
+write.xlsx(total, "total.xlsx", row.names = F)
